@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function Home() {
@@ -5,13 +6,29 @@ export default function Home() {
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
+          className="dark:invert cursor-pointer rounded-2xl"
+          src="/images/hellblade.jpg"
+          alt="hellblade"
           width={180}
           height={38}
           priority
         />
+
+        <Image
+          className="dark:invert cursor-pointer rounded-2xl"
+          src="/images/hollow-knight.jpg"
+          alt="knight"
+          width={180}
+          height={38}
+          priority
+        />
+
+        <Button>버튼 클릭</Button>
+
+        <h1 className="font-bold text-3xl sm:text-4xl lg:text-5xl text-center sm:text-left">
+          {" "}
+        </h1>
+
         <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2 tracking-[-.01em]">
             Get started by editing{" "}

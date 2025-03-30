@@ -1,16 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,10 +13,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="ko" data-theme="blue">
+      <body className={` antialiased`}>
+        <div className="bg-background text-foreground p-6">
+          
+          <h1 className={`font-nanum-gothic text-2xl font-black`}>
+            나눔고딕  Tailwind 4.0에서 @theme 적용
+          </h1>
+
+          <p className={`text-2xl font-bold  `}>
+          Noto Sans KR 은 1순위 기본 폰트 설정 완료!
+          </p>
+        </div>
+
         {children}
       </body>
     </html>
