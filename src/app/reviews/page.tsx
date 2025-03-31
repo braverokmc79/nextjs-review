@@ -1,19 +1,19 @@
 import { Heading } from "@/components/Heading";
-import { getFeaturedReview } from "@/lib/reviews";
+import { getReviews } from "@/lib/reviews";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
 
-const HomePage: React.FC = async () => {
+const ReviewsPage: React.FC = async () => {
   console.log("ReviewsPage");
-  const review  = await getFeaturedReview();
+  const reviews = await getReviews();
 
   return (
     <div className="w-full mx-auto px-4">
-      <Heading className="text-3xl font-bold text-center mb-6">Review</Heading>
-      <ul className="w-full max-w-3xl mx-auto justify-center items-center  gap-6">
-     
+      <Heading className="text-3xl font-bold text-center mb-6">Reviews</Heading>
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {reviews.map((review) => (
           <li key={review.slug}>
             <Link href={`/reviews/${review.slug}`}>
               <Card className="overflow-hidden transition-transform transform hover:scale-105 hover:shadow-lg">
@@ -36,10 +36,10 @@ const HomePage: React.FC = async () => {
               </Card>
             </Link>
           </li>
-       
+        ))}
       </ul>
     </div>
   );
 };
 
-export default HomePage;
+export default ReviewsPage;
