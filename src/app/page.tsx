@@ -5,8 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
 
+export const metadata = {
+  title: {
+    default: "Home | Indie Gamer",
+    template: "%s | Indie Gamer",
+    description: "Only the best indie games, reviewd for you.",
+  }  
+};
+
+
 const HomePage: React.FC = async () => {
-  console.log("ReviewsPage");
+ 
   const review  = await getFeaturedReview();
 
   return (
@@ -31,6 +40,12 @@ const HomePage: React.FC = async () => {
                 <CardContent className="p-4 flex-grow flex items-center justify-center">
                   <CardTitle className="text-lg font-semibold text-center truncate w-full">
                     {review.title}
+                  </CardTitle>
+                </CardContent>
+
+                <CardContent className="p-4 flex-grow flex items-center justify-center">
+                  <CardTitle className="text-lg font-semibold text-center truncate w-full">
+                    {review.body}
                   </CardTitle>
                 </CardContent>
               </Card>
