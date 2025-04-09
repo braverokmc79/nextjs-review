@@ -8,6 +8,7 @@ import Image from "next/image";
 const ReviewsPage: React.FC = async () => {
   console.log("ReviewsPage");
   const reviews = await getReviews();
+  console.log("review===========>", reviews);
 
   return (
     <div className="w-full mx-auto px-4">

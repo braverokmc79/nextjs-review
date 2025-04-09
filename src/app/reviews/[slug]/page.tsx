@@ -52,6 +52,9 @@ const ReviewPage: React.FC<ReviewPageProps> = async ({ params }) => {
   const { slug } =await params;
   const review = await getReview(slug);
 
+  console.log("review===========>",review);
+
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
       <Card className="shadow-lg overflow-hidden">
