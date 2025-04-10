@@ -76,18 +76,13 @@ export async function getReview(slug:string) :Promise<Review> {
   }     
 }
 
-export async function getFeaturedReview(): Promise<Review> {
-  const reviews = await getReviews();
-  return reviews[0];
-}
 
-
-export async function getReviews() {        
+export async function getReviews(pageSize:number = 6): Promise<Review[]> {        
     const {data} = await fetchReviews({            
       fields: ["slug", "title", "subtitle" ,"publishedAt"],
       populate: { image: { fields: ["url"] } },
       sort: ["publishedAt:desc"],
-      pagination: { pageSize:6}
+      pagination: { pageSize:pageSize}
     });
     return data.map((item :GetReviewData) => toReview(item));  
 }
@@ -102,6 +97,11 @@ export async function getSlugs() {
   return data.map((item :GetReviewData) =>item.attributes.slug );  
 }
 
+
+export async function getFeaturedReview(): Promise<Review> {
+  const reviews = await getReviews();
+  return reviews[0];
+}
 
 
 
