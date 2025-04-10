@@ -1,7 +1,28 @@
+import { marked } from "marked";
 import { notFound } from "next/navigation";
-import { readdir, readFile } from 'node:fs/promises';
-import matter from 'gray-matter';
-import { marked } from 'marked';
+
+import qs from "qs";
+
+
+const  CMS_URL = process.env.NEXT_PUBLIC_CMS_URL || "http://localhost:1337";
+
+export interface GetReviewData {
+  id: number;
+  attributes: {
+    slug: string;
+    title: string;
+    subtitle: string;
+    publishedAt: string; // ISO date string
+    image: {
+      data: {
+        id: number;
+        attributes: {
+          url: string;
+        };
+      };
+    };
+  };
+}
 
 export type Review ={
   slug: string,
@@ -9,18 +30,50 @@ export type Review ={
   date: string,
   image: string,
   body: string,
+  subtitle: string,
+  id: number;
+}
+
+export async function fetchReviews(parameters:object) {    
+  const url = `${CMS_URL}/api/reviews?`
+         + qs.stringify(parameters, { encodeValuesOnly: true });    
+    //console.log(" [fetchReviews] url: ", url);
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`CMS returned ${response.status} for ${url} `);
+    }
+    return await response.json();
 }
 
 
-export async function getReview(slug:string){
+function toReview(item :GetReviewData){
+  const {id} = item;
+  const {attributes} = item;
+  const {slug, title, subtitle, publishedAt} = attributes;
+  const image = CMS_URL+attributes.image.data.attributes.url;
+  const date=publishedAt.slice(0,"yyyy-mm-dd".length);
+  return {id, slug, title, subtitle, date, image};
+}
+
+
+export async function getReview(slug:string) :Promise<Review> {
   try {
-    const response =await readFile(`./content/reviews/${slug}.json`, "utf-8");
-    const {title, date, image, body}  =JSON.parse(response);  
-    return {slug,title, date, image, body};
-  } catch (error) { 
-    console.log(`Error reading review file: ${slug}.json`, error);   
-    throw notFound();
-  }  
+    const {data} = await fetchReviews({                        
+      filters:{slug: {$eq: slug}},
+      fields: ["slug", "title", "subtitle" ,"publishedAt", "body"],
+      populate: { image: { fields: ["url"] } },
+      pagination: { pageSize:1, withCount: false },
+    });
+
+    const item = data[0];
+    return{
+      ...toReview(item),      
+      body: await marked(item.attributes.body),
+    }   
+  } catch (error) {
+    console.error("Error fetching review:", error);
+    notFound();
+  }     
 }
 
 export async function getFeaturedReview(): Promise<Review> {
@@ -29,33 +82,26 @@ export async function getFeaturedReview(): Promise<Review> {
 }
 
 
-export async function getReviews() {
-  const files = await readdir('./content/reviews');
-  const slugs = files.filter((file) => file.endsWith('.json')).map((file) => file.slice(0, -'.json'.length));
-  const reviews = [];
-  for (const slug of slugs) {
-    const review = await getReview(slug);
-    reviews.push(review);
-  }
-  reviews.sort((a, b) => b.date.localeCompare(a.date));
-  return reviews;
+export async function getReviews() {        
+    const {data} = await fetchReviews({            
+      fields: ["slug", "title", "subtitle" ,"publishedAt"],
+      populate: { image: { fields: ["url"] } },
+      sort: ["publishedAt:desc"],
+      pagination: { pageSize:6}
+    });
+    return data.map((item :GetReviewData) => toReview(item));  
 }
 
 
 export async function getSlugs() {
-  const files = await readdir('./content/reviews');
-  return files.filter((file) => file.endsWith('.json')).map((file) => file.slice(0, -'.json'.length));
-  
+  const {data} = await fetchReviews({
+    fields: ["slug"],
+    sort: ["publishedAt:desc"],    
+    pagination: { pageSize: 1000 },
+  });
+  return data.map((item :GetReviewData) =>item.attributes.slug );  
 }
 
 
 
 
-
-
-export async function getReview2(slug:string) {
-  const text = await readFile(`./content/reviews/${slug}.md`, 'utf8');
-  const { content, data: { title, date, image } } = matter(text);
-  const body = marked(content);
-  return { slug, title, date, image, body };
-}

@@ -1,6 +1,7 @@
+
 import React from "react";
 import { Heading } from "@/components/Heading";
-import { getReview, getSlugs } from "@/lib/reviews";
+import { getReview ,getSlugs} from "@/lib/reviews";
 import Image from "next/image";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -11,7 +12,7 @@ import ShareButtons from "@/components/ShareButtons";
 
 export async function generateStaticParams() {
   const slugs = await getSlugs();
-  return slugs.map((slug) => ({ slug }));
+  return slugs.map((slug: string) => ({ slug }));
 }
 
 type Props = {
@@ -37,7 +38,7 @@ export async function generateMetadata({params}:Props): Promise<Metadata> {
       description: review.body.slice(0, 150) + "…",
       images: [`${process.env.NEXT_PUBLIC_SITE_URL}${review.image}`],
     },
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL||""), 
   };
 
 }
@@ -52,7 +53,6 @@ const ReviewPage: React.FC<ReviewPageProps> = async ({ params }) => {
   const { slug } =await params;
   const review = await getReview(slug);
 
-  console.log("review===========>",review);
 
 
   return (
