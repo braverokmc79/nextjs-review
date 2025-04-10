@@ -1,0 +1,23 @@
+{
+  "name": "next-reviews-cms",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "strapi develop",
+    "develop": "strapi develop",
+    "pmp-start": "pm2 start \"npx strapi start\" --name strapi --node-args=\"--max-old-space-size=768\"",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
+  },
+  "dependencies": {
+    "@strapi/strapi": "4.20.2",
+    "@strapi/plugin-users-permissions": "4.20.2",
+    "@strapi/plugin-i18n": "4.20.2",
+    "better-sqlite3": "8.6.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "5.3.4",
+    "styled-components": "5.3.3"
+  }
+}
