@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { getReviews } from "@/lib/reviews";
 
-export const dynamic = "force-dynamic";
+//export const dynamic = "force-dynamic";
+//export const revalidate = 30; // 30초마다 새로고침
 
 
 export const metadata = {
@@ -36,17 +37,19 @@ const HomePage: React.FC = async () => {
                 rounded-lg shadow-md bg-white dark:bg-gray-800 dark:text-white
               ">
                 <CardHeader className="p-0 items-center  ">
-                <Image
-                      src={review.image}
-                      alt={review.title}
-                      width={360}
-                      height={360}
-                      className="w-full h-full object-cover rounded-lg
-                       aspect-[4/3] md:aspect-[16/9]
-                       left-2 relative md:left-0  md:p-3
-                       transition-transform transform hover:scale-105 hover:shadow-lg
-                      "
-                    />
+                {review.image && 
+                  <Image
+                        src={review.image}
+                        alt={review.title}
+                        width={360}
+                        height={360}
+                        className="w-full h-full object-cover rounded-lg
+                        aspect-[4/3] md:aspect-[16/9]
+                        left-2 relative md:left-0  md:p-3
+                        transition-transform transform hover:scale-105 hover:shadow-lg
+                        "
+                      />
+                }
                 </CardHeader>
                 <CardContent className="">
                   <CardTitle className="text-lg  md:text-2xl font-bold  py-5 

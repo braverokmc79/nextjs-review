@@ -1,10 +1,11 @@
 import { marked } from "marked";
 import { notFound } from "next/navigation";
-
 import qs from "qs";
 
-
 const  CMS_URL = process.env.NEXT_PUBLIC_CMS_URL || "http://localhost:1337";
+
+export const CACHE_TAG_REVIEWS = "reviews";
+
 
 export interface GetReviewData {
   id: number;
@@ -28,7 +29,7 @@ export type Review ={
   slug: string,
   title: string,
   date: string,
-  image: string,
+  image: string|undefined,
   body: string,
   subtitle: string,
   id: number;
@@ -39,7 +40,8 @@ function toReview(item :GetReviewData){
   const {id} = item;
   const {attributes} = item;
   const {slug, title, subtitle, publishedAt} = attributes;
-  const image = CMS_URL+attributes.image.data.attributes.url;
+  const image = attributes?.image?.data?.attributes?.url===undefined
+     ? undefined: CMS_URL+attributes?.image?.data?.attributes?.url ;
   const date=publishedAt.slice(0,"yyyy-mm-dd".length);
   return {id, slug, title, subtitle, date, image};
 }
@@ -48,7 +50,13 @@ export async function fetchReviews(parameters:object) {
   const url = `${CMS_URL}/api/reviews?`
          + qs.stringify(parameters, { encodeValuesOnly: true });    
     //console.log(" [fetchReviews] url: ", url);
-    const response = await fetch(url);
+    const response = await fetch(url,
+      {
+       next:{
+        tags: [CACHE_TAG_REVIEWS],
+        }
+     } 
+    );
     if (!response.ok) {
       throw new Error(`CMS returned ${response.status} for ${url} `);
     }

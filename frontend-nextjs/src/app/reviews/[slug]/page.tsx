@@ -1,4 +1,3 @@
-"use dynamic";
 import React from "react";
 import { Heading } from "@/components/Heading";
 import Image from "next/image";
@@ -12,6 +11,7 @@ import { notFound } from "next/navigation";
 import { cache } from 'react';
 import { getReview as rawGetReview ,getSlugs} from "@/lib/reviews";
 
+//export const dynamic = "force-dynamic";
 
 //여기서 cache는 매 페이지 요청마다 새로 호출될 수 있고, 같은 요청 안에서는 중복 호출 방지 역할만한다
 const getReview = cache(rawGetReview);
@@ -25,7 +25,6 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata({params}:Props): Promise<Metadata> {
   const {slug}=await  params;
@@ -73,13 +72,14 @@ const ReviewPage: React.FC<ReviewPageProps> = async ({ params }) => {
     <div className="max-w-4xl mx-auto px-4 py-6">
       <Card className="shadow-lg overflow-hidden">
         <CardHeader className="p-0">
-          <Image
+         {review.image &&  <Image
             src={review.image}
             alt={`영화 리뷰: ${review.title}`}
             width={640}
             height={360}
             className="w-full h-auto object-cover rounded-t-lg"
           />
+         }
         </CardHeader>
         <CardContent className="p-6">
           <Heading className="text-2xl font-bold mb-2 text-center">

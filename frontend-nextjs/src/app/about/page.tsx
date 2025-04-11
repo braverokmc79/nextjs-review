@@ -28,7 +28,7 @@ const AboutPage = () => {
       <p className="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">
         커뮤니티와의 소통을 중요하게 생각하며, 여러분의 리뷰와 의견도 언제든 환영합니다.  
         <br />
-        <span className="font-semibold">"당신의 다음 최고의 게임, 여기서 시작됩니다."</span>
+        <span className="font-semibold">당신의 다음 최고의 게임, 여기서 시작됩니다.</span>
       </p>
 
       <div className="text-center mt-10">
