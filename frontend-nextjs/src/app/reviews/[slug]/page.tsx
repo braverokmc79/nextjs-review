@@ -1,7 +1,6 @@
-
+"use dynamic";
 import React from "react";
 import { Heading } from "@/components/Heading";
-import { getReview ,getSlugs} from "@/lib/reviews";
 import Image from "next/image";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -9,6 +8,13 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Metadata } from "next";
 import ShareButtons from "@/components/ShareButtons";
+import { notFound } from "next/navigation";
+import { cache } from 'react';
+import { getReview as rawGetReview ,getSlugs} from "@/lib/reviews";
+
+
+//여기서 cache는 매 페이지 요청마다 새로 호출될 수 있고, 같은 요청 안에서는 중복 호출 방지 역할만한다
+const getReview = cache(rawGetReview);
 
 export async function generateStaticParams() {
   const slugs = await getSlugs();
@@ -19,10 +25,15 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({params}:Props): Promise<Metadata> {
   const {slug}=await  params;
   const review = await getReview(slug);
-
+  console.log("👺2. 캐시 확인 로그: ");
+  if(!review) {
+    return {};
+  }
   return {
     title: review.title,
     description: review.body.slice(0, 150) + "…",
@@ -52,7 +63,10 @@ interface ReviewPageProps {
 const ReviewPage: React.FC<ReviewPageProps> = async ({ params }) => {
   const { slug } =await params;
   const review = await getReview(slug);
-
+  console.log("👺1.캐시 확인 로그: ");
+  if (!review) {
+    notFound();
+  }
 
 
   return (
@@ -74,7 +88,6 @@ const ReviewPage: React.FC<ReviewPageProps> = async ({ params }) => {
           <p className="text-sm text-gray-500 italic text-center pb-4">{review.date}</p>
 
           <ShareButtons />
-
 
           <Separator className="mb-4" />
           <article

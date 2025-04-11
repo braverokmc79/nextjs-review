@@ -34,6 +34,16 @@ export type Review ={
   id: number;
 }
 
+
+function toReview(item :GetReviewData){
+  const {id} = item;
+  const {attributes} = item;
+  const {slug, title, subtitle, publishedAt} = attributes;
+  const image = CMS_URL+attributes.image.data.attributes.url;
+  const date=publishedAt.slice(0,"yyyy-mm-dd".length);
+  return {id, slug, title, subtitle, date, image};
+}
+
 export async function fetchReviews(parameters:object) {    
   const url = `${CMS_URL}/api/reviews?`
          + qs.stringify(parameters, { encodeValuesOnly: true });    
@@ -46,17 +56,8 @@ export async function fetchReviews(parameters:object) {
 }
 
 
-function toReview(item :GetReviewData){
-  const {id} = item;
-  const {attributes} = item;
-  const {slug, title, subtitle, publishedAt} = attributes;
-  const image = CMS_URL+attributes.image.data.attributes.url;
-  const date=publishedAt.slice(0,"yyyy-mm-dd".length);
-  return {id, slug, title, subtitle, date, image};
-}
-
-
-export async function getReview(slug:string) :Promise<Review> {
+export async function getReview(slug:string) :Promise<Review | null> {
+  console.log(" ✅캐싱 확인: ", slug);
   try {
     const {data} = await fetchReviews({                        
       filters:{slug: {$eq: slug}},
@@ -64,6 +65,9 @@ export async function getReview(slug:string) :Promise<Review> {
       populate: { image: { fields: ["url"] } },
       pagination: { pageSize:1, withCount: false },
     });
+    if (data.length === 0) {
+      return null;
+    }
 
     const item = data[0];
     return{
@@ -75,7 +79,6 @@ export async function getReview(slug:string) :Promise<Review> {
     notFound();
   }     
 }
-
 
 export async function getReviews(pageSize:number = 6): Promise<Review[]> {        
     const {data} = await fetchReviews({            

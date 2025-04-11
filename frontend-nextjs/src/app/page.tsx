@@ -4,6 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { getReviews } from "@/lib/reviews";
 
+export const dynamic = "force-dynamic";
+
+
 export const metadata = {
   title: {
     default: "Home | Indie Gamer",
